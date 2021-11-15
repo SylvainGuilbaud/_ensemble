@@ -1,9 +1,9 @@
 Class utils.database
 {
 
-ClassMethod delete(directory As %String = "/usr/cache/bases/") As %Status
+ClassMethod delete(directory As %String = "/usr/cache/bases", verbose As %Boolean = 1) As %Status
 {
-    set ns=$NAMESPACE,sc=$$$OK
+    set ns=$NAMESPACE,sc=$$$OK,msg="",severity=0
     try {
         zn "%sys"
         set directory = ##class(%Library.File).NormalizeDirectory(directory)
@@ -17,6 +17,7 @@ ClassMethod delete(directory As %String = "/usr/cache/bases/") As %Status
                 set msg="erreur durant le démontage de la base "_dbName_" ("_$system.Status.GetErrorText(sc)_")",severity=1
                 do ##class(%SYS.System).WriteToConsoleLog(msg,0,severity)
             }
+            write:verbose !,msg,!
         
             set sc=##class(SYS.Database).DeleteDatabase(dbName)
             if sc {
@@ -26,6 +27,7 @@ ClassMethod delete(directory As %String = "/usr/cache/bases/") As %Status
                 set msg="erreur durant la suppression de la base "_dbName_" ("_$system.Status.GetErrorText(sc)_")",severity=1
                 do ##class(%SYS.System).WriteToConsoleLog(msg,0,severity)
             }
+            write:verbose !,msg,!
 
             set sc=##class(Config.Databases).Delete(dbType)
             if sc {
@@ -35,6 +37,7 @@ ClassMethod delete(directory As %String = "/usr/cache/bases/") As %Status
                 set msg="erreur durant la suppression de la configuration de la base "_dbName_" ("_$system.Status.GetErrorText(sc)_")",severity=1
                 do ##class(%SYS.System).WriteToConsoleLog(msg,0,severity)
             }
+            write:verbose !,msg,!
 
             set resourceName="%DB_"_dbType
             set sc = ##class(Security.Resources).Delete(resourceName)
@@ -45,6 +48,7 @@ ClassMethod delete(directory As %String = "/usr/cache/bases/") As %Status
                 set msg="erreur durant la suppression de la ressource "_resourceName_" ("_$system.Status.GetErrorText(sc)_")",severity=1
                 do ##class(%SYS.System).WriteToConsoleLog(msg,0,severity)
             }
+            write:verbose !,msg,!
 
             set sc = ##class(%Library.File).RemoveDirectoryTree(dbName)
             if sc {
@@ -54,6 +58,7 @@ ClassMethod delete(directory As %String = "/usr/cache/bases/") As %Status
                 set msg="erreur durant la suppression du répertoire de la base "_dbName_" ("_$system.Status.GetErrorText(sc)_")",severity=1
                 do ##class(%SYS.System).WriteToConsoleLog(msg,0,severity)
             }
+            write:verbose !,msg,!
         }
         
     } catch e {
