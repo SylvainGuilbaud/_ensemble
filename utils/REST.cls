@@ -326,6 +326,8 @@ ClassMethod createNamespace() As %Status
         set vars("INTEROP")=json.interop
         set sc=##class(utils.installer.namespace).setup(.vars)
         set json.status=json.namespace_" successfully created"  
+        set msg="création de l'espace de noms "_json.namespace_" depuis l'app "_$CLASSNAME(),severity=0
+        do ##class(%SYS.System).WriteToConsoleLog(msg,0,severity)
     } catch e {
         set sc=e.AsStatus()
         set msg="erreur durant la création de l'espace de noms "_json.namespace_"("_$system.Status.GetErrorText(sc)_")",severity=1
@@ -370,6 +372,8 @@ ClassMethod deleteNamespace() As %Status
 
         set sc=##class(Security.Applications).Delete("/csp/"_json.namespace)
         set:sc json.CSPApplication="/csp/"_json.namespace_" successfully deleted"
+        set msg="suppression de l'espace de noms "_json.namespace_" depuis l'app "_$CLASSNAME(),severity=0
+        do ##class(%SYS.System).WriteToConsoleLog(msg,0,severity)
     } catch e {
         set sc=e.AsStatus()
         set msg="erreur durant la création de l'espace de noms "_json.namespace_"("_$system.Status.GetErrorText(sc)_")",severity=1

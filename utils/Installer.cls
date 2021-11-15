@@ -213,7 +213,6 @@ ClassMethod CreateAllNamespace() As %Status
     }
 
     return st
-
 }
 
 ClassMethod Map(fromNS = "") As %Status
